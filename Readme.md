@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Вероника Костенко](https://up.htmlacademy.ru/javascript/13/user/403393).
-* Наставник: `Неизвестно`.
+* Наставник: [Альбина Токарчук](https://up.htmlacademy.ru/javascript/13/user/167491).
 
 ---
 
