@@ -89,11 +89,14 @@ var fillBigPicture = function (index) {
     imgElement.setAttribute('width', '35');
     imgElement.setAttribute('height', '35');    
   }
-  
+  //
+  pictureBig.querySelector('.social__comment-count').classList.add('visually-hidden');
+  pictureBig.querySelector('.social__comment-loadmore').classList.add('visually-hidden');
 };
 
 //вызовы
 var pictureData = generateData(25);
 makeTemplateElement(pictureData);
 fillBigPicture(0);
+
 
