@@ -89,7 +89,7 @@ var fillBigPicture = function (index) {
     imgElement.setAttribute('width', '35');
     imgElement.setAttribute('height', '35');    
   }
-  //
+  //спрятать блоки
   pictureBig.querySelector('.social__comment-count').classList.add('visually-hidden');
   pictureBig.querySelector('.social__comment-loadmore').classList.add('visually-hidden');
 };
