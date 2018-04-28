@@ -1,5 +1,7 @@
 'use strict';
 
+var ESC_KEY_CODE = 27;
+
 var commentsArray = ['Всё отлично!', 'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
 
 var descriptionsArray = ['Тестим новую камеру!', 'Затусили с друзьями на море', 'Как же круто тут кормят', 'Отдыхаем...', 'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......', 'Вот это тачка!'];
@@ -91,10 +93,10 @@ var fillBigPictureComments = function (dataIndex) {
     liElement.insertAdjacentHTML('afterbegin', '<img>');
     var imgElement = liElement.querySelector('img');
     imgElement.className = 'social__picture';
-    imgElement.setAttribute('src', imgSrc);     
+    imgElement.setAttribute('src', imgSrc);
     imgElement.setAttribute('alt', 'Аватар комментатора фотографии');
     imgElement.setAttribute('width', '35');
-    imgElement.setAttribute('height', '35');    
+    imgElement.setAttribute('height', '35');
   }
 };
 
@@ -114,9 +116,257 @@ var fillBigPicture = function (index) {
   pictureBig.querySelector('.social__comment-loadmore').classList.add('visually-hidden');
 };
 
-// вызовы
+// вызовы для отображения маленьких картинок
 var pictureData = generateData(25);
 makeTemplateElement(pictureData);
-fillBigPicture(0);
 
+// ТЗ - ЗАГРУЗКА ИЗОБРАЖЕНИЯ
 
+var pictureEffects = document.querySelector('.img-upload__overlay');
+var pictureUpload = document.querySelector('#upload-file');
+var pictureEffectsClose = pictureEffects.querySelector('#upload-cancel');
+
+// обработчики
+var pictureChangeOpenHandler = function () {
+  // две строки для сброса значения размера до 100%
+  pictureSizeValue.setAttribute('value', '100%');
+  picturePreview.setAttribute('style', 'transform: scale(1);');
+  pictureEffects.classList.remove('hidden');
+};
+
+var pictureChangeCloseHandler = function () {
+  // установлено пустое значение. Но одну и ту же картинку можно выбрать только при клике на крестик. При нажатии на еск почему-то не срабатывает. До того, как добавила эту строчку с обнулением value, работало все точно так же.
+  pictureUpload.setAttribute('value', '');
+  pictureEffects.classList.add('hidden');
+};
+
+var pictureChangeCloseEscHandler = function (evt) {
+  if (evt.keyCode === ESC_KEY_CODE) {
+    pictureChangeCloseHandler();
+    // не отслеживать больше еск
+    document.removeEventListener('keydown', pictureChangeCloseEscHandler);
+  }
+};
+
+// загрузка картинки и появление окна редактирования и закрытие по клавише еск
+pictureUpload.addEventListener('change', function () {
+  pictureChangeOpenHandler();
+  document.addEventListener('keydown', pictureChangeCloseEscHandler);
+});
+// закрытие окна редактирования по клику и снятие отслеживания клавиши еск
+pictureEffectsClose.addEventListener('click', function () {
+  pictureChangeCloseHandler();
+  document.removeEventListener('keydown', pictureChangeCloseEscHandler);
+});
+
+// ТЗ - РЕДАКТИРОВАНИЕ ИЗОБРАЖЕНИЯ
+
+var pictureSizeMinus = pictureEffects.querySelector('.resize__control--minus');
+var pictureSizePlus = pictureEffects.querySelector('.resize__control--plus');
+var pictureSizeValue = pictureEffects.querySelector('.resize__control--value');
+var picturePreview = pictureEffects.querySelector('.img-upload__preview');
+var pictureEffectChrome = pictureEffects.querySelector('#effect-chrome');
+var pictureEffectSepia = pictureEffects.querySelector('#effect-sepia');
+var pictureEffectMarvin = pictureEffects.querySelector('#effect-marvin');
+var pictureEffectPhobos = pictureEffects.querySelector('#effect-phobos');
+var pictureEffectsHeat = pictureEffects.querySelector('#effect-heat');
+var pictureEffectOriginal = pictureEffects.querySelector('#effect-none');
+var scalePin = pictureEffects.querySelector('.scale__pin');
+var scaleValue = pictureEffects.querySelector('.scale__value');
+var scale = pictureEffects.querySelector('.scale');
+
+// обработчики
+var pictureReduceHandler = function () {
+  var currentSize = parseInt(pictureSizeValue.getAttribute('value'), 10);
+  if (currentSize > 50) {
+    currentSize -= 25;
+  } else if (currentSize > 25 && currentSize <= 50) {
+    currentSize = 25;
+  }
+  pictureSizeValue.setAttribute('value', currentSize + '%');
+  var styleScale = 'scale(' + currentSize / 100 + ')';
+  picturePreview.style.transform = styleScale;
+};
+
+var pictureIncreaseHandler = function () {
+  var currentSize = parseInt(pictureSizeValue.getAttribute('value'), 10);
+  if (currentSize < 75) {
+    currentSize += 25;
+  } else if (currentSize < 100 && currentSize >= 75) {
+    currentSize = 100;
+  }
+  pictureSizeValue.setAttribute('value', currentSize + '%');
+  var styleScale = 'scale(' + currentSize / 100 + ')';
+  picturePreview.style.transform = styleScale;
+};
+
+var chromeAddHandler = function () {
+  picturePreview.style.filter = 'none';
+  picturePreview.style.filter = 'grayscale(1)';
+  picturePreview.classList.add('effects__preview--chrome');
+};
+
+var sepiaAddHandler = function () {
+  picturePreview.style.filter = 'none';
+  picturePreview.style.filter = 'sepia(1)';
+  picturePreview.classList.add('effects__preview--sepia');
+};
+
+var marvinAddHandler = function () {
+  picturePreview.style.filter = 'none';
+  picturePreview.style.filter = 'invert(100%)';
+  picturePreview.classList.add('effects__preview--marvin');
+};
+
+var phobosAddHandler = function () {
+  picturePreview.style.filter = 'none';
+  picturePreview.style.filter = 'blur(3px)';
+  picturePreview.classList.add('effects__preview--phobos');
+};
+
+var heatAddHandler = function () {
+  picturePreview.style.filter = 'none';
+  picturePreview.style.filter = 'brightness(3)';
+  picturePreview.classList.add('effects__preview--heat');
+};
+
+var chromeChangeHandler = function () {
+  var value = scaleValue.getAttribute('value');
+  var level = value / 100;
+  picturePreview.style.filter = 'grayscale(' + level + ')';
+  scalePin.removeEventListener('mouseup', chromeChangeHandler);
+};
+
+var sepiaChangeHandler = function () {
+  var value = scaleValue.getAttribute('value');
+  var level = value / 100;
+  picturePreview.style.filter = 'sepia(' + level + ')';
+  scalePin.removeEventListener('mouseup', sepiaChangeHandler);
+};
+
+var marvinChangeHandler = function () {
+  var value = scaleValue.getAttribute('value');
+  picturePreview.style.filter = 'invert(' + value + '%)';
+  scalePin.removeEventListener('mouseup', marvinChangeHandler);
+};
+
+var phobosChangeHandler = function () {
+  var value = scaleValue.getAttribute('value');
+  var level;
+  if (value >= 0 && value <= 25) {
+    level = '0px';
+  } else if (value > 25 && value <= 50) {
+    level = '1px';
+  } else if (value > 50 && value <= 75) {
+    level = '2px';
+  } else {
+    level = '3px';
+  }
+  picturePreview.style.filter = 'blur(' + level + ')';
+  scalePin.removeEventListener('mouseup', phobosChangeHandler);
+};
+
+var heatChangeHandler = function () {
+  var value = scaleValue.getAttribute('value');
+  var level = 1 + value / 50;
+  picturePreview.style.filter = 'brightness(' + level + ')';
+  scalePin.removeEventListener('mouseup', heatChangeHandler);
+};
+
+var scaleHideHandler = function () {
+  picturePreview.style.filter = 'none';
+  scale.classList.add('hidden');
+};
+
+var scaleShowHandler = function () {
+  scale.classList.remove('hidden');
+};
+
+// уменьшение изображения
+pictureSizeMinus.addEventListener('click', pictureReduceHandler);
+// увеличение изображения
+pictureSizePlus.addEventListener('click', pictureIncreaseHandler);
+// управление эффектом хром
+pictureEffectChrome.addEventListener('click', function () {
+  scaleShowHandler();
+  chromeAddHandler();
+  scalePin.addEventListener('mouseup', chromeChangeHandler);
+});
+// управление эффектом сепия
+pictureEffectSepia.addEventListener('click', function () {
+  scaleShowHandler();
+  sepiaAddHandler();
+  scalePin.addEventListener('mouseup', sepiaChangeHandler);
+});
+// управление эффектом марвин
+pictureEffectMarvin.addEventListener('click', function () {
+  scaleShowHandler();
+  marvinAddHandler();
+  scalePin.addEventListener('mouseup', marvinChangeHandler);
+});
+// управление эффектом фобос
+pictureEffectPhobos.addEventListener('click', function () {
+  scaleShowHandler();
+  phobosAddHandler();
+  scalePin.addEventListener('mouseup', phobosChangeHandler);
+});
+// управление эффектом зной
+pictureEffectsHeat.addEventListener('click', function () {
+  scaleShowHandler();
+  heatAddHandler();
+  scalePin.addEventListener('mouseup', heatChangeHandler);
+});
+// применение эффекта оригинал + спрятать слайдер
+pictureEffectOriginal.addEventListener('click', scaleHideHandler);
+
+// ТЗ - ПОКАЗ ИЗОБРАЖЕНИЯ В ПОЛНОЭКРАННОМ РЕЖИМЕ
+
+var pictureSmallPlace = document.querySelector('.pictures');
+var pictureBig = document.querySelector('.big-picture');
+var pictureBigCancel = pictureBig.querySelector('.big-picture__cancel');
+
+// обработчики
+var modalOpenAddHandler = function () {
+  document.querySelector('body').classList.add('modal-open');
+};
+
+var modalOpenRemoveHandler = function () {
+  document.querySelector('body').classList.remove('modal-open');
+};
+
+var pictureOpenHandler = function (evt) {
+  var target = evt.target;
+  if (target.tagName === 'IMG') {
+    var src = target.getAttribute('src');
+    for (var i = 0; i < pictureData.length; i++) {
+      if (pictureData[i].url === src) {
+        fillBigPicture(i);
+      }
+    }
+  }
+};
+
+var pictureCloseHandler = function () {
+  pictureBig.classList.add('hidden');
+};
+
+var pictureCloseEscHandler = function (evt) {
+  if (evt.keyCode === ESC_KEY_CODE) {
+    pictureCloseHandler();
+    modalOpenRemoveHandler();
+    document.removeEventListener('keydown', pictureCloseEscHandler);
+  }
+};
+
+// показать картинку (делегирование)
+pictureSmallPlace.addEventListener('click', function (evt) {
+  modalOpenAddHandler();
+  pictureOpenHandler(evt);
+  document.addEventListener('keydown', pictureCloseEscHandler);
+});
+// закрыть картинку по нажатию на крестик
+pictureBigCancel.addEventListener('click', function() {
+  pictureCloseHandler();
+  modalOpenRemoveHandler();
+  document.removeEventListener('keydown', pictureCloseEscHandler);
+});
