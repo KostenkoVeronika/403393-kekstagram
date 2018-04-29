@@ -125,6 +125,7 @@ makeTemplateElement(pictureData);
 var pictureEffects = document.querySelector('.img-upload__overlay');
 var pictureUpload = document.querySelector('#upload-file');
 var pictureEffectsClose = pictureEffects.querySelector('#upload-cancel');
+var pictureEffectsFirstInput = pictureEffects.querySelector('.effects__radio');
 
 // обработчики
 var pictureChangeOpenHandler = function () {
@@ -132,6 +133,10 @@ var pictureChangeOpenHandler = function () {
   pictureSizeValue.setAttribute('value', '100%');
   picturePreview.setAttribute('style', 'transform: scale(1);');
   pictureEffects.classList.remove('hidden');
+  // применение первого эффекта (оригинал) вместо дефолтного изображения
+  pictureEffectsFirstInput.checked = true;
+  picturePreview.classList.add('effects__preview--none');
+  scale.classList.add('hidden');
 };
 
 var pictureChangeCloseHandler = function () {
@@ -161,169 +166,116 @@ pictureEffectsClose.addEventListener('click', function () {
 
 // ТЗ - РЕДАКТИРОВАНИЕ ИЗОБРАЖЕНИЯ
 
-var pictureSizeMinus = pictureEffects.querySelector('.resize__control--minus');
-var pictureSizePlus = pictureEffects.querySelector('.resize__control--plus');
 var pictureSizeValue = pictureEffects.querySelector('.resize__control--value');
+var pictureResize = pictureEffects.querySelector('.img-upload__resize');
 var picturePreview = pictureEffects.querySelector('.img-upload__preview');
-var pictureEffectChrome = pictureEffects.querySelector('#effect-chrome');
-var pictureEffectSepia = pictureEffects.querySelector('#effect-sepia');
-var pictureEffectMarvin = pictureEffects.querySelector('#effect-marvin');
-var pictureEffectPhobos = pictureEffects.querySelector('#effect-phobos');
-var pictureEffectsHeat = pictureEffects.querySelector('#effect-heat');
-var pictureEffectOriginal = pictureEffects.querySelector('#effect-none');
 var scalePin = pictureEffects.querySelector('.scale__pin');
 var scaleValue = pictureEffects.querySelector('.scale__value');
 var scale = pictureEffects.querySelector('.scale');
+var effectsList = pictureEffects.querySelector('.effects__list');
 
 // обработчики
-var pictureReduceHandler = function () {
-  var currentSize = parseInt(pictureSizeValue.getAttribute('value'), 10);
-  if (currentSize > 50) {
-    currentSize -= 25;
-  } else if (currentSize > 25 && currentSize <= 50) {
-    currentSize = 25;
+var pictureResizeHandler = function (evt) {
+  var target = evt.target;
+  var currentSize = parseInt(pictureSizeValue.getAttribute('value'));
+  if (target.getAttribute('class') === 'resize__control resize__control--minus') {
+    if (currentSize > 50) {
+      currentSize -= 25;
+    } else if (currentSize > 25 && currentSize <= 50) {
+      currentSize = 25;
+    }
+  } else if (target.getAttribute('class') === 'resize__control resize__control--plus') {
+    if (currentSize < 75) {
+      currentSize += 25;
+    } else if (currentSize < 100 && currentSize >= 75) {
+      currentSize = 100;
+    }
   }
   pictureSizeValue.setAttribute('value', currentSize + '%');
   var styleScale = 'scale(' + currentSize / 100 + ')';
   picturePreview.style.transform = styleScale;
 };
 
-var pictureIncreaseHandler = function () {
-  var currentSize = parseInt(pictureSizeValue.getAttribute('value'), 10);
-  if (currentSize < 75) {
-    currentSize += 25;
-  } else if (currentSize < 100 && currentSize >= 75) {
-    currentSize = 100;
+var effectAddHandler = function (evt) {
+  picturePreview.style.filter = 'none';
+  // убирает класс от прошлого эффекта, если он есть
+  if (picturePreview.classList.length === 2) {
+    var lastClassIndex = picturePreview.classList.length;
+    var lastClassName = picturePreview.classList.item(lastClassIndex - 1);
+    picturePreview.classList.remove(lastClassName);
   }
-  pictureSizeValue.setAttribute('value', currentSize + '%');
-  var styleScale = 'scale(' + currentSize / 100 + ')';
-  picturePreview.style.transform = styleScale;
+  var target = evt.target; 
+  if (target.tagName === 'INPUT') {
+    var filterId = target.getAttribute('id');
+    if (filterId !== 'effect-none') {
+      scale.classList.remove('hidden');
+      if (filterId === 'effect-chrome') {
+        picturePreview.classList.add('effects__preview--chrome');
+        picturePreview.style.filter = 'grayscale(1)';
+      } else if (filterId === 'effect-sepia') {
+        picturePreview.classList.add('effects__preview--sepia');
+        picturePreview.style.filter = 'sepia(1)';  
+      } else if (filterId === 'effect-marvin') {
+        picturePreview.classList.add('effects__preview--marvin');
+        picturePreview.style.filter = 'invert(100%)'; 
+      } else if (filterId === 'effect-phobos') {
+        picturePreview.classList.add('effects__preview--phobos');
+        picturePreview.style.filter = 'blur(3px)'; 
+      } else if (filterId === 'effect-heat') {
+        picturePreview.classList.add('effects__preview--heat');
+        picturePreview.style.filter = 'brightness(3)';
+      } 
+    } else {
+      picturePreview.classList.add('effects__preview--none');
+      scale.classList.add('hidden');
+    }
+  }
 };
 
-var chromeAddHandler = function () {
-  picturePreview.style.filter = 'none';
-  picturePreview.style.filter = 'grayscale(1)';
-  picturePreview.classList.add('effects__preview--chrome');
-};
-
-var sepiaAddHandler = function () {
-  picturePreview.style.filter = 'none';
-  picturePreview.style.filter = 'sepia(1)';
-  picturePreview.classList.add('effects__preview--sepia');
-};
-
-var marvinAddHandler = function () {
-  picturePreview.style.filter = 'none';
-  picturePreview.style.filter = 'invert(100%)';
-  picturePreview.classList.add('effects__preview--marvin');
-};
-
-var phobosAddHandler = function () {
-  picturePreview.style.filter = 'none';
-  picturePreview.style.filter = 'blur(3px)';
-  picturePreview.classList.add('effects__preview--phobos');
-};
-
-var heatAddHandler = function () {
-  picturePreview.style.filter = 'none';
-  picturePreview.style.filter = 'brightness(3)';
-  picturePreview.classList.add('effects__preview--heat');
-};
-
-var chromeChangeHandler = function () {
-  var value = scaleValue.getAttribute('value');
-  var level = value / 100;
-  picturePreview.style.filter = 'grayscale(' + level + ')';
-  scalePin.removeEventListener('mouseup', chromeChangeHandler);
-};
-
-var sepiaChangeHandler = function () {
-  var value = scaleValue.getAttribute('value');
-  var level = value / 100;
-  picturePreview.style.filter = 'sepia(' + level + ')';
-  scalePin.removeEventListener('mouseup', sepiaChangeHandler);
-};
-
-var marvinChangeHandler = function () {
-  var value = scaleValue.getAttribute('value');
-  picturePreview.style.filter = 'invert(' + value + '%)';
-  scalePin.removeEventListener('mouseup', marvinChangeHandler);
-};
-
-var phobosChangeHandler = function () {
+var effectChangeHandler = function () {
+  var effectClassName = picturePreview.classList.item(picturePreview.classList.length - 1);
   var value = scaleValue.getAttribute('value');
   var level;
-  if (value >= 0 && value <= 25) {
-    level = '0px';
-  } else if (value > 25 && value <= 50) {
-    level = '1px';
-  } else if (value > 50 && value <= 75) {
-    level = '2px';
-  } else {
-    level = '3px';
+  if (effectClassName === 'effects__preview--chrome') {
+    level = value / 100;
+    picturePreview.style.filter = 'grayscale(' + level + ')';
+  } else if (effectClassName === 'effects__preview--sepia') {
+    level = value / 100;
+    picturePreview.style.filter = 'sepia(' + level + ')';
+  } else if (effectClassName === 'effects__preview--marvin') {
+    picturePreview.style.filter = 'invert(' + value + '%)';
+  } else if (effectClassName === 'effects__preview--phobos') {
+    if (value >= 0 && value <= 25) {
+      level = '0px';
+    } else if (value > 25 && value <= 50) {
+      level = '1px';
+    } else if (value > 50 && value <= 75) {
+      level = '2px';
+    } else {
+      level = '3px';
+    }
+    picturePreview.style.filter = 'blur(' + level + ')';
+  } else if (effectClassName === 'effects__preview--heat') {
+    level = 1 + value / 50;
+    picturePreview.style.filter = 'brightness(' + level + ')';
   }
-  picturePreview.style.filter = 'blur(' + level + ')';
-  scalePin.removeEventListener('mouseup', phobosChangeHandler);
+  scalePin.removeEventListener('mouseup', effectChangeHandler);
 };
 
-var heatChangeHandler = function () {
-  var value = scaleValue.getAttribute('value');
-  var level = 1 + value / 50;
-  picturePreview.style.filter = 'brightness(' + level + ')';
-  scalePin.removeEventListener('mouseup', heatChangeHandler);
-};
-
-var scaleHideHandler = function () {
-  picturePreview.style.filter = 'none';
-  scale.classList.add('hidden');
-};
-
-var scaleShowHandler = function () {
-  scale.classList.remove('hidden');
-};
-
-// уменьшение изображения
-pictureSizeMinus.addEventListener('click', pictureReduceHandler);
-// увеличение изображения
-pictureSizePlus.addEventListener('click', pictureIncreaseHandler);
-// управление эффектом хром
-pictureEffectChrome.addEventListener('click', function () {
-  scaleShowHandler();
-  chromeAddHandler();
-  scalePin.addEventListener('mouseup', chromeChangeHandler);
+// изменение размера изображения
+pictureResize.addEventListener('click', pictureResizeHandler);
+// управление эффектами
+effectsList.addEventListener('click', function (evt){
+  effectAddHandler(evt);
+  scalePin.addEventListener('mouseup', effectChangeHandler);
 });
-// управление эффектом сепия
-pictureEffectSepia.addEventListener('click', function () {
-  scaleShowHandler();
-  sepiaAddHandler();
-  scalePin.addEventListener('mouseup', sepiaChangeHandler);
-});
-// управление эффектом марвин
-pictureEffectMarvin.addEventListener('click', function () {
-  scaleShowHandler();
-  marvinAddHandler();
-  scalePin.addEventListener('mouseup', marvinChangeHandler);
-});
-// управление эффектом фобос
-pictureEffectPhobos.addEventListener('click', function () {
-  scaleShowHandler();
-  phobosAddHandler();
-  scalePin.addEventListener('mouseup', phobosChangeHandler);
-});
-// управление эффектом зной
-pictureEffectsHeat.addEventListener('click', function () {
-  scaleShowHandler();
-  heatAddHandler();
-  scalePin.addEventListener('mouseup', heatChangeHandler);
-});
-// применение эффекта оригинал + спрятать слайдер
-pictureEffectOriginal.addEventListener('click', scaleHideHandler);
 
 // ТЗ - ПОКАЗ ИЗОБРАЖЕНИЯ В ПОЛНОЭКРАННОМ РЕЖИМЕ
 
 var pictureSmallPlace = document.querySelector('.pictures');
 var pictureBig = document.querySelector('.big-picture');
 var pictureBigCancel = pictureBig.querySelector('.big-picture__cancel');
+var pictureBigCommentsPlace = pictureBig.querySelector('.social__comments');
 
 // обработчики
 var modalOpenAddHandler = function () {
@@ -340,6 +292,10 @@ var pictureOpenHandler = function (evt) {
     var src = target.getAttribute('src');
     for (var i = 0; i < pictureData.length; i++) {
       if (pictureData[i].url === src) {
+        // чистит прошлые комменты
+        while (pictureBigCommentsPlace.firstChild) {
+          pictureBigCommentsPlace.removeChild(pictureBigCommentsPlace.firstChild);
+        }
         fillBigPicture(i);
       }
     }
