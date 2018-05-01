@@ -366,26 +366,22 @@ var hashtagValidateHandler = function (evt) {
     // формирует сообщение об ошибках
     if (hashtagItem !== '') {
       if (firstSymbol !== '#') {
-        hashtagError += 'Хэш-тег должен начинаться с символа #. ';
+        hashtagError = checkSameError(hashtagError, 'Хэш-тег должен начинаться с символа #. ');
       }
       if (hashtagItem === '#') {
-        hashtagError += 'Хэш-тег не может состоять только из символа #. ';
+        hashtagError = checkSameError(hashtagError, 'Хэш-тег не может состоять только из символа #. ');
       }
       if (itemLength > 20) {
-        hashtagError += 'Длина одного хэш-тега не должна превышать 20 символов. ';
+        hashtagError = checkSameError(hashtagError, 'Длина одного хэш-тега не должна превышать 20 символов. ');
       } 
       if (doubleHashtag) {
-        hashtagError += 'Хэш-теги должны разделяться пробелами. ';
+        hashtagError = checkSameError(hashtagError, 'Хэш-теги должны разделяться пробелами. ');
       }
       if (hashtagArray.length > 5) {
-        hashtagError += 'Хэш-тегов не может быть больше 5 штук. ';
+        hashtagError = checkSameError(hashtagError, 'Хэш-тегов не может быть больше 5 штук. ');
       }
       if (sameHashtag) {
-        var sameHashtagMessage = 'Хэш-теги не должны повторяться. ';
-        // проверяет есть ли уже сообщение о повторении хэштега
-        if (hashtagError.indexOf(sameHashtagMessage) === -1){
-          hashtagError += sameHashtagMessage;
-        }
+        hashtagError = checkSameError(hashtagError, 'Хэш-теги не должны повторяться. ');
       }  
     }
   }
@@ -399,16 +395,17 @@ var hashtagValidateHandler = function (evt) {
   }
 };
 
-var commentValidateHandler = function (evt) {
-  var commentValue = comment.value;
-  var commentError = 'Вы неправильно ввели комментарий! ';
-  if (commentValue !== '') {
-    if (commentValue.length > 140) {
-      commentError += 'Комментрий не должен быть длиннее 140 символов. '
-    }
+// проверяет, чтобы сообщения об ошибках в хэштегах не повторялись
+var checkSameError = function (errorAll, errorMessage) {
+  if (errorAll.indexOf(errorMessage) === -1) {
+    errorAll += errorMessage;
   }
-  if (commentError !== 'Вы неправильно ввели комментарий! ') {
-    comment.setCustomValidity(commentError);
+  return errorAll;
+};
+
+var commentValidateHandler = function (evt) {
+  if (comment.validity.tooLong) {
+    comment.setCustomValidity('Комментрий не должен быть длиннее 140 символов.');
     comment.classList.add('description-invalid');
   } else {
     comment.setCustomValidity('');
@@ -419,7 +416,9 @@ var commentValidateHandler = function (evt) {
 // при клике на сабмит валидирует хэштеги и комментарий
 formSubmit.addEventListener('click', function (evt) {
   hashtagValidateHandler(evt);
-  commentValidateHandler(evt);
+  comment.addEventListener('invalid', function (evt) {
+    commentValidateHandler(evt);
+  })
 });
 // когда фокус на хэштегах клавиша еск не сработает
 hashtag.addEventListener('focus', function () {
