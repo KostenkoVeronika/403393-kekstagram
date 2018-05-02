@@ -1,6 +1,8 @@
 'use strict';
 
 var ESC_KEY_CODE = 27;
+var SCALE_LINE_START = 0;
+var SCALE_LINE_END = 453;
 
 var commentsArray = ['Всё отлично!', 'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
 
@@ -171,6 +173,7 @@ var pictureResize = pictureEffects.querySelector('.img-upload__resize');
 var picturePreview = pictureEffects.querySelector('.img-upload__preview');
 var scalePin = pictureEffects.querySelector('.scale__pin');
 var scaleValue = pictureEffects.querySelector('.scale__value');
+var scaleLevel = pictureEffects.querySelector('.scale__level');
 var scale = pictureEffects.querySelector('.scale');
 var effectsList = pictureEffects.querySelector('.effects__list');
 
@@ -203,6 +206,8 @@ var effectAddHandler = function (evt) {
     var lastClassIndex = picturePreview.classList.length;
     var lastClassName = picturePreview.classList.item(lastClassIndex - 1);
     picturePreview.classList.remove(lastClassName);
+    scalePin.style.left = SCALE_LINE_END + 'px';
+    scaleLevel.style.width = '100%';
   }
   var target = evt.target; 
   if (target.tagName === 'INPUT') {
@@ -232,9 +237,9 @@ var effectAddHandler = function (evt) {
   }
 };
 
-var effectChangeHandler = function () {
+var effectChangeHandler = function (pin) {
   var effectClassName = picturePreview.classList.item(picturePreview.classList.length - 1);
-  var value = scaleValue.getAttribute('value');
+  var value = proportionPin(pin);
   var level;
   if (effectClassName === 'effects__preview--chrome') {
     level = value / 100;
@@ -259,7 +264,6 @@ var effectChangeHandler = function () {
     level = 1 + value / 50;
     picturePreview.style.filter = 'brightness(' + level + ')';
   }
-  scalePin.removeEventListener('mouseup', effectChangeHandler);
 };
 
 // изменение размера изображения
@@ -267,7 +271,43 @@ pictureResize.addEventListener('click', pictureResizeHandler);
 // управление эффектами
 effectsList.addEventListener('click', function (evt){
   effectAddHandler(evt);
-  scalePin.addEventListener('mouseup', effectChangeHandler);
+});
+
+// ТЗ - ПЕРЕМЕЩЕНИЕ СЛАЙДЕРА
+
+// зависимость между шириной шкалы в пх и в %
+var proportionPin = function (dataNumber) {
+  var value = Math.round(100 * dataNumber / SCALE_LINE_END);
+  return value;
+};
+
+// перемещение слайдера
+scalePin.addEventListener('mousedown', function(evt) {
+  evt.preventDefault();
+  var startX = evt.clientX;
+  
+  var pinMoveHandler = function (evtMove) {
+    evtMove.preventDefault();
+    var shift = startX - evtMove.clientX;
+    startX = evtMove.clientX;
+    var pinPosition = scalePin.offsetLeft - shift;
+    if (pinPosition >= SCALE_LINE_START && pinPosition <= SCALE_LINE_END) {
+      scalePin.style.left = pinPosition + 'px';
+      scaleLevel.style.width = proportionPin(pinPosition) + '%';
+    }
+    var pinValue = parseInt(scalePin.style.left, 10);
+    effectChangeHandler(pinValue);
+  };
+  
+  var pinUpHandler = function (evtUp) {
+    evtUp.preventDefault();
+    var pinValue = parseInt(scalePin.style.left, 10);
+    effectChangeHandler(pinValue);
+    document.removeEventListener('mousemove', pinMoveHandler);
+    document.removeEventListener('mouseup', pinUpHandler);
+  };
+  document.addEventListener('mousemove', pinMoveHandler);
+  document.addEventListener('mouseup', pinUpHandler);
 });
 
 // ТЗ - ПОКАЗ ИЗОБРАЖЕНИЯ В ПОЛНОЭКРАННОМ РЕЖИМЕ
