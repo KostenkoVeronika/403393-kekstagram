@@ -832,6 +832,11 @@ main {
   border-radius: 5px;
 }
 
+.description-invalid {
+  border-color: red;
+  border-width: 2px;
+}
+
 
 /* Кнопка отправки формы */
 
