@@ -7,7 +7,7 @@
   // функция для заполнения элементов по шаблону
   var fillTemplateFragment = function (pictureInfo, template) {
     var templateFragment = document.createDocumentFragment();
-    for (var i = 0; i < pictureInfo.length; i++) {
+    for (var i = 0; i < pictureInfo.count; i++) {
       var pictureElement = template.cloneNode(true);
       pictureElement.querySelector('.picture__img').setAttribute('src', pictureInfo[i].url);
       pictureElement.querySelector('.picture__stat--likes').textContent = pictureInfo[i].likes;

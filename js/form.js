@@ -73,6 +73,14 @@
   comment.addEventListener('blur', function () {
     document.addEventListener('keydown', pictureChangeCloseEscHandler);
   });
+  
+  // отправка данных на сервер
+//  form.addEventListener('submit', function (evt) {
+//    window.upload(new FormData(form), function(response) {
+//      pictureChangeCloseHandler();
+//    });
+//    evt.preventDefault();
+//  });
 
 })();
 

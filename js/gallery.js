@@ -12,7 +12,7 @@
   var pictureBigCommentsPlace = pictureBig.querySelector('.social__comments');
 
   // вызов для отображения маленьких картинок
-  window.makeTemplateElement(window.pictureData);
+  //window.makeTemplateElement(window.pictureData);
 
   // обработчики
   var modalOpenAddHandler = function () {
@@ -33,7 +33,7 @@
           while (pictureBigCommentsPlace.firstChild) {
             pictureBigCommentsPlace.removeChild(pictureBigCommentsPlace.firstChild);
           }
-          window.fillBigPicture(i);
+          //window.fillBigPicture(i);
         }
       }
     }
