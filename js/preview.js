@@ -8,7 +8,7 @@
   var fillBigPictureComments = function (dataIndex, pictureData) {
     var commentsBlock = document.querySelector('.social__comments');
     for (var i = 1; i <= pictureData[dataIndex].comments.length-1; i++) {
-      var imgSrc = 'img/avatar-' + window.getRandomNumber(1, 6) + '.svg';
+      var imgSrc = 'img/avatar-' + window.util.getRandomNumber(1, 6) + '.svg';
       var liElement = document.createElement('li');
       liElement.classList.add('social__comment');
       liElement.classList.add('social__comment--text');

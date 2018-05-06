@@ -4,8 +4,6 @@
 
 (function () {
 
-  var SCALE_LINE_END = 453;
-  
   var pictureEffects = document.querySelector('.img-upload__overlay');
   var pictureSizeValue = pictureEffects.querySelector('.resize__control--value');
   var pictureResize = pictureEffects.querySelector('.img-upload__resize');
@@ -18,6 +16,7 @@
   var form = document.querySelector('.img-upload__form');
   var hashtag = form.querySelector('.text__hashtags');
   var comment = form.querySelector('.text__description');
+  var scaleLine = pictureEffects.querySelector('.scale__line');
 
   // обработчики
   var pictureResizeHandler = function (evt) {
@@ -41,23 +40,8 @@
     picturePreview.style.transform = styleScale;
   };
   
-  // чистит эффект и его уровень и класс и хэштег и коммент до дефолтного
-  window.effectClear = function () {
-    picturePreview.style.filter = 'none';
-    // убирает класс от прошлого эффекта, если он есть
-    if (picturePreview.classList.length === 2) {
-      var lastClassIndex = picturePreview.classList.length;
-      var lastClassName = picturePreview.classList.item(lastClassIndex - 1);
-      picturePreview.classList.remove(lastClassName);
-      scalePin.style.left = SCALE_LINE_END + 'px';
-      scaleLevel.style.width = '100%';
-      hashtag.value = '';
-      comment.value = '';
-    }
-  };
-  
   var effectAddHandler = function (evt) {
-    window.effectClear();
+    window.util.effectClear(picturePreview, scalePin, scaleLevel, hashtag, comment);
     var target = evt.target; 
     if (target.tagName === 'INPUT') {
       var filterId = target.getAttribute('id');
@@ -67,7 +51,7 @@
         var filterName = target.getAttribute('value');
         if (filterId === 'effect-' + filterName) {
           picturePreview.classList.add('effects__preview--'+filterName);
-          effectChangeHandler(SCALE_LINE_END);
+          effectChangeHandler(scale.offsetWidth);
         }
       } else {
         picturePreview.classList.add('effects__preview--none');
@@ -78,7 +62,7 @@
   
   // зависимость между шириной шкалы в пх и в % на слайдере
   var proportionPin = function (dataNumber) {
-    var value = Math.round(100 * dataNumber / SCALE_LINE_END);
+    var value = Math.round(100 * dataNumber / scaleLine.offsetWidth);
     return value;
   };
 
@@ -129,7 +113,7 @@
       var shift = startX - evtMove.clientX;
       startX = evtMove.clientX;
       var pinPosition = scalePin.offsetLeft - shift;
-      if (pinPosition >= 0 && pinPosition <= SCALE_LINE_END) {
+      if (pinPosition >= 0 && pinPosition <= scaleLine.offsetWidth) {
         scalePin.style.left = pinPosition + 'px';
         scaleLevel.style.width = proportionPin(pinPosition) + '%';
       }

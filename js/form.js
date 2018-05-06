@@ -5,7 +5,6 @@
 (function () {
 
   var ESC_KEY_CODE = 27;
-  var SCALE_LINE_END = 453;
   
   var pictureEffects = document.querySelector('.img-upload__overlay');
   var pictureUpload = document.querySelector('#upload-file');
@@ -37,7 +36,7 @@
 
   var pictureChangeCloseHandler = function () {
     pictureUpload.value = '';
-    window.effectClear();
+    window.util.effectClear(picturePreview, scalePin, scaleLevel, hashtag, comment);
     pictureEffects.classList.add('hidden');
   };
 
