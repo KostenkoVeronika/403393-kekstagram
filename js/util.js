@@ -1,11 +1,11 @@
 'use strict';
 
-//ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 
 (function () {
-  
+
   window.util = {
-    
+
     getRandomNumber: function (min, max) {
       var randomNumber = min + Math.random() * (max + 1 - min);
       randomNumber = Math.floor(randomNumber);
@@ -25,7 +25,4 @@
       }
     }
   };
-  
-  
-  
 })();

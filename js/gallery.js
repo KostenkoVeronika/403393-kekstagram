@@ -7,7 +7,7 @@
   var ESC_KEY_CODE = 27;
   var ENTER_KEY_CODE = 13;
   var TIMEOUT = 500;
-  
+
   var pictureSmallPlace = document.querySelector('.pictures');
   var pictureBig = document.querySelector('.big-picture');
   var pictureBigCancel = pictureBig.querySelector('.big-picture__cancel');
@@ -26,7 +26,7 @@
   var modalOpenRemoveHandler = function () {
     document.querySelector('body').classList.remove('modal-open');
   };
-  
+
   var pictureOpenSrcHandler = function (pictureData, src) {
     for (var i = 0; i < pictureData.length; i++) {
       if (pictureData[i].url === src) {
@@ -44,9 +44,7 @@
     if (target.tagName === 'IMG') {
       var src = target.getAttribute('src');
       pictureOpenSrcHandler(pictureData, src);
-    }
-    else if (target.tagName === 'A') {
-      var src = target.children[0].getAttribute('src');
+    } else if (target.tagName === 'A') {
       pictureOpenSrcHandler(pictureData, src);
     }
   };
@@ -62,28 +60,28 @@
       document.removeEventListener('keydown', pictureCloseEscHandler);
     }
   };
-  
+
   var sortLikes = function (copyArray) {
     var likesDown = copyArray.sort(function (one, two) {
       return two.likes - one.likes;
     });
     return likesDown;
   };
-  
+
   var sortComments = function (copyArray) {
     var commentsDown = copyArray.sort(function (one, two) {
       return two.comments.length - one.comments.length;
     });
     return commentsDown;
   };
-  
+
   var sortRandom = function (copyArray) {
     var randomOrder = copyArray.sort(function () {
-      return window.util.getRandomNumber(0, copyArray.length-1);  
+      return window.util.getRandomNumber(0, copyArray.length - 1);
     });
     return randomOrder;
-  }
-  
+  };
+
   var doFilter = function (data, func) {
     if (func) {
       var copy = data.slice();
@@ -93,7 +91,7 @@
       window.makeTemplateElement(data);
     }
   };
-  
+
   var filterClickHandler = function (evt, data) {
     var filterActiveClass = 'img-filters__button--active';
     window.removeTemplateElement();
@@ -105,7 +103,7 @@
       var filterId = target.getAttribute('id');
       target.classList.add(filterActiveClass);
       if (filterId === 'filter-popular') {
-        doFilter(data, sortLikes);  
+        doFilter(data, sortLikes);
       } else if (filterId === 'filter-recommend') {
         doFilter(data);
       } else if (filterId === 'filter-discussed') {
@@ -119,11 +117,11 @@
   // загрузка данных с сервера - успех
   var successLoadHandler = function (data) {
     picturesLoad = data;
-    
+
     // вызов для отображения маленьких картинок
     window.makeTemplateElement(picturesLoad);
     filtersBlock.classList.remove('img-filters--inactive');
-    
+
     var filterDoHandler = function (evt) {
       if (lastTimeout) {
         window.clearTimeout(lastTimeout);
@@ -132,13 +130,13 @@
         filterClickHandler(evt, picturesLoad);
       }, TIMEOUT);
     };
-    
+
     var previewDoHandler = function (evt) {
       modalOpenAddHandler();
       pictureOpenHandler(evt, picturesLoad);
       document.addEventListener('keydown', pictureCloseEscHandler);
     };
-    
+
     // слушатель для вызова большой картинки
     pictureSmallPlace.addEventListener('click', previewDoHandler);
     pictureSmallPlace.addEventListener('keydown', function (evt) {
@@ -146,7 +144,7 @@
         previewDoHandler(evt);
       }
     });
-    
+
     // применение фильтров
     filtersForm.addEventListener('click', filterDoHandler);
     filtersForm.addEventListener('keydown', function (evt) {
@@ -155,7 +153,7 @@
       }
     });
   };
-  
+
   // загрузка данных с сервера - ошибка
   var errorLoadHandler = function (message) {
     var errorElement = document.createElement('div');
@@ -167,10 +165,10 @@
     errorElement.textContent = message;
     document.body.insertAdjacentElement('afterbegin', errorElement);
   };
-  
+
   // загрузка данных с сервера
   window.backend.load(successLoadHandler, errorLoadHandler);
-  
+
   // закрыть картинку по нажатию на крестик
   pictureBigCancel.addEventListener('click', function () {
     pictureCloseHandler();
@@ -186,4 +184,3 @@
   });
 
 })();
-
