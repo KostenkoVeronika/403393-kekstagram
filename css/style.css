@@ -1233,7 +1233,7 @@ main {
 
 @media (min-width: 0) and (max-width: 1023px) {
   .container {
-    width: 600px;
+    width: 700px;
   }
 
   .pictures {

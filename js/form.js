@@ -5,7 +5,7 @@
 (function () {
 
   var ESC_KEY_CODE = 27;
-  var SCALE_LINE_END = 453;
+  var ENTER_KEY_CODE = 13;
   
   var pictureEffects = document.querySelector('.img-upload__overlay');
   var pictureUpload = document.querySelector('#upload-file');
@@ -37,7 +37,7 @@
 
   var pictureChangeCloseHandler = function () {
     pictureUpload.value = '';
-    window.effectClear();
+    window.util.effectClear(picturePreview, scalePin, scaleLevel, hashtag, comment);
     pictureEffects.classList.add('hidden');
   };
 
@@ -59,6 +59,13 @@
   pictureEffectsClose.addEventListener('click', function () {
     pictureChangeCloseHandler();
     document.removeEventListener('keydown', pictureChangeCloseEscHandler);
+  });
+  
+  pictureEffectsClose.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEY_CODE) {
+      pictureChangeCloseHandler();
+      document.removeEventListener('keydown', pictureChangeCloseEscHandler);
+    }
   });
 
   // когда фокус на хэштегах клавиша еск не сработает
@@ -94,7 +101,7 @@
     messageBlock.textContent = message;
     errorLinks.insertAdjacentElement('beforebegin', messageBlock);
   };
-  
+      
   // отправка данных на сервер
   form.addEventListener('submit', function (evt) {
     window.backend.upload(new FormData(form), successSendHandler, errorSendHandler);

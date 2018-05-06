@@ -4,6 +4,8 @@
 
 (function () {
 
+  var picturePlace = document.querySelector('.pictures');
+    
   // функция для заполнения элементов по шаблону
   var fillTemplateFragment = function (pictureInfo, template) {
     var templateFragment = document.createDocumentFragment();
@@ -20,10 +22,16 @@
 
   // функция для создания элементов по шаблону
   window.makeTemplateElement = function (pictureInfo) {
-    var picturePlace = document.querySelector('.pictures');
     var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture__link');
     var pictureFragment = fillTemplateFragment(pictureInfo, pictureTemplate);
     picturePlace.appendChild(pictureFragment);
+  };
+  
+  //
+  window.removeTemplateElement = function () {
+    while (picturePlace.children.length > 2) {
+      picturePlace.removeChild(picturePlace.children[2]);
+    }
   };
 
 })();
