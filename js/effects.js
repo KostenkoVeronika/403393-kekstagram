@@ -4,7 +4,6 @@
 
 (function () {
 
-  var SCALE_LINE_START = 0;
   var SCALE_LINE_END = 453;
   
   var pictureEffects = document.querySelector('.img-upload__overlay');
@@ -16,6 +15,9 @@
   var scaleLevel = pictureEffects.querySelector('.scale__level');
   var scale = pictureEffects.querySelector('.scale');
   var effectsList = pictureEffects.querySelector('.effects__list');
+  var form = document.querySelector('.img-upload__form');
+  var hashtag = form.querySelector('.text__hashtags');
+  var comment = form.querySelector('.text__description');
 
   // обработчики
   var pictureResizeHandler = function (evt) {
@@ -38,8 +40,9 @@
     var styleScale = 'scale(' + currentSize / 100 + ')';
     picturePreview.style.transform = styleScale;
   };
-
-  var effectAddHandler = function (evt) {
+  
+  // чистит эффект и его уровень и класс и хэштег и коммент до дефолтного
+  window.effectClear = function () {
     picturePreview.style.filter = 'none';
     // убирает класс от прошлого эффекта, если он есть
     if (picturePreview.classList.length === 2) {
@@ -48,28 +51,24 @@
       picturePreview.classList.remove(lastClassName);
       scalePin.style.left = SCALE_LINE_END + 'px';
       scaleLevel.style.width = '100%';
+      hashtag.value = '';
+      comment.value = '';
     }
+  };
+  
+  var effectAddHandler = function (evt) {
+    window.effectClear();
     var target = evt.target; 
     if (target.tagName === 'INPUT') {
       var filterId = target.getAttribute('id');
       if (filterId !== 'effect-none') {
         scale.classList.remove('hidden');
-        if (filterId === 'effect-chrome') {
-          picturePreview.classList.add('effects__preview--chrome');
-          picturePreview.style.filter = 'grayscale(1)';
-        } else if (filterId === 'effect-sepia') {
-          picturePreview.classList.add('effects__preview--sepia');
-          picturePreview.style.filter = 'sepia(1)';  
-        } else if (filterId === 'effect-marvin') {
-          picturePreview.classList.add('effects__preview--marvin');
-          picturePreview.style.filter = 'invert(100%)'; 
-        } else if (filterId === 'effect-phobos') {
-          picturePreview.classList.add('effects__preview--phobos');
-          picturePreview.style.filter = 'blur(3px)'; 
-        } else if (filterId === 'effect-heat') {
-          picturePreview.classList.add('effects__preview--heat');
-          picturePreview.style.filter = 'brightness(3)';
-        } 
+        // добавление класса и максимального эффекта картинке
+        var filterName = target.getAttribute('value');
+        if (filterId === 'effect-' + filterName) {
+          picturePreview.classList.add('effects__preview--'+filterName);
+          effectChangeHandler(SCALE_LINE_END);
+        }
       } else {
         picturePreview.classList.add('effects__preview--none');
         scale.classList.add('hidden');
@@ -130,7 +129,7 @@
       var shift = startX - evtMove.clientX;
       startX = evtMove.clientX;
       var pinPosition = scalePin.offsetLeft - shift;
-      if (pinPosition >= SCALE_LINE_START && pinPosition <= SCALE_LINE_END) {
+      if (pinPosition >= 0 && pinPosition <= SCALE_LINE_END) {
         scalePin.style.left = pinPosition + 'px';
         scaleLevel.style.width = proportionPin(pinPosition) + '%';
       }
