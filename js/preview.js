@@ -7,7 +7,7 @@
   // функция для отображения комментариев в блоке с большой картинкой
   var fillBigPictureComments = function (dataIndex) {
     var commentsBlock = document.querySelector('.social__comments');
-    for (var i = 0; i < window.pictureData[dataIndex].comments.length; i++) {
+    for (var i = 1; i <= window.pictureData[dataIndex].comments.length-1; i++) {
       var imgSrc = 'img/avatar-' + window.getRandomNumber(1, 6) + '.svg';
       var liElement = document.createElement('li');
       liElement.classList.add('social__comment');
@@ -31,8 +31,8 @@
     pictureBig.classList.remove('hidden');
     pictureBig.querySelector('.big-picture__img img').setAttribute('src', pictureBigData.url);
     pictureBig.querySelector('.likes-count').textContent = pictureBigData.likes;
-    pictureBig.querySelector('.comments-count').textContent = pictureBigData.comments.length;
-    pictureBig.querySelector('.social__caption').textContent = pictureBigData.description;
+    pictureBig.querySelector('.comments-count').textContent = pictureBigData.comments.length-1;
+    pictureBig.querySelector('.social__caption').textContent = pictureBigData.comments[0];
     // вызов функции для отображения комментов
     fillBigPictureComments(index);
     // спрятать блоки

@@ -15,6 +15,9 @@
   var scaleLevel = pictureEffects.querySelector('.scale__level');
   var scale = pictureEffects.querySelector('.scale');
   var effectsList = pictureEffects.querySelector('.effects__list');
+  var form = document.querySelector('.img-upload__form');
+  var hashtag = form.querySelector('.text__hashtags');
+  var comment = form.querySelector('.text__description');
 
   // обработчики
   var pictureResizeHandler = function (evt) {
@@ -38,7 +41,8 @@
     picturePreview.style.transform = styleScale;
   };
   
-  var effectAddHandler = function (evt) {
+  // чистит эффект и его уровень и класс и хэштег и коммент до дефолтного
+  window.effectClear = function () {
     picturePreview.style.filter = 'none';
     // убирает класс от прошлого эффекта, если он есть
     if (picturePreview.classList.length === 2) {
@@ -47,7 +51,13 @@
       picturePreview.classList.remove(lastClassName);
       scalePin.style.left = SCALE_LINE_END + 'px';
       scaleLevel.style.width = '100%';
+      hashtag.value = '';
+      comment.value = '';
     }
+  };
+  
+  var effectAddHandler = function (evt) {
+    window.effectClear();
     var target = evt.target; 
     if (target.tagName === 'INPUT') {
       var filterId = target.getAttribute('id');
