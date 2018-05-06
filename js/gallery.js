@@ -5,6 +5,7 @@
 (function () {
 
   var ESC_KEY_CODE = 27;
+  var ENTER_KEY_CODE = 13;
   var TIMEOUT = 500;
   
   var pictureSmallPlace = document.querySelector('.pictures');
@@ -25,20 +26,28 @@
   var modalOpenRemoveHandler = function () {
     document.querySelector('body').classList.remove('modal-open');
   };
+  
+  var pictureOpenSrcHandler = function (pictureData, src) {
+    for (var i = 0; i < pictureData.length; i++) {
+      if (pictureData[i].url === src) {
+        // чистит прошлые комменты
+        while (pictureBigCommentsPlace.firstChild) {
+          pictureBigCommentsPlace.removeChild(pictureBigCommentsPlace.firstChild);
+        }
+        window.fillBigPicture(i, pictureData);
+      }
+    }
+  };
 
   var pictureOpenHandler = function (evt, pictureData) {
     var target = evt.target;
     if (target.tagName === 'IMG') {
       var src = target.getAttribute('src');
-      for (var i = 0; i < pictureData.length; i++) {
-        if (pictureData[i].url === src) {
-          // чистит прошлые комменты
-          while (pictureBigCommentsPlace.firstChild) {
-            pictureBigCommentsPlace.removeChild(pictureBigCommentsPlace.firstChild);
-          }
-          window.fillBigPicture(i, pictureData);
-        }
-      }
+      pictureOpenSrcHandler(pictureData, src);
+    }
+    else if (target.tagName === 'A') {
+      var src = target.children[0].getAttribute('src');
+      pictureOpenSrcHandler(pictureData, src);
     }
   };
 
@@ -56,30 +65,14 @@
   
   var sortLikes = function (copyArray) {
     var likesDown = copyArray.sort(function (one, two) {
-      if (one.likes > two.likes) {
-        return -1;
-      }
-      else if (one.likes < two.likes) {
-        return 1;
-      }
-      else {
-        return 0;
-      }
+      return two.likes - one.likes;
     });
     return likesDown;
   };
   
   var sortComments = function (copyArray) {
     var commentsDown = copyArray.sort(function (one, two) {
-      if (one.comments.length-1 > two.comments.length-1) {
-        return -1;
-      }
-      else if (one.comments.length-1 < two.comments.length-1) {
-        return 1;
-      }
-      else {
-        return 0;
-      }
+      return two.comments.length - one.comments.length;
     });
     return commentsDown;
   };
@@ -96,8 +89,9 @@
       var copy = data.slice();
       var arrayNew = func(copy);
       window.makeTemplateElement(arrayNew);
+    } else {
+      window.makeTemplateElement(data);
     }
-    window.makeTemplateElement(data);
   };
   
   var filterClickHandler = function (evt, data) {
@@ -110,17 +104,13 @@
     if (target.tagName === 'BUTTON') {
       var filterId = target.getAttribute('id');
       target.classList.add(filterActiveClass);
-      
       if (filterId === 'filter-popular') {
         doFilter(data, sortLikes);  
-      }
-      else if (filterId === 'filter-recommend') {
+      } else if (filterId === 'filter-recommend') {
         doFilter(data);
-      }
-      else if (filterId === 'filter-discussed') {
+      } else if (filterId === 'filter-discussed') {
         doFilter(data, sortComments);
-      }
-      else if (filterId === 'filter-random') {
+      } else if (filterId === 'filter-random') {
         doFilter(data, sortRandom);
       }
     }
@@ -134,21 +124,35 @@
     window.makeTemplateElement(picturesLoad);
     filtersBlock.classList.remove('img-filters--inactive');
     
-    // слушатель для вызова большой картинки
-    pictureSmallPlace.addEventListener('click', function (evt) {
-      modalOpenAddHandler();
-      pictureOpenHandler(evt, picturesLoad);
-      document.addEventListener('keydown', pictureCloseEscHandler);
-    });
-    
-    // применение фильтров
-    filtersForm.addEventListener('click', function (evt) {
+    var filterDoHandler = function (evt) {
       if (lastTimeout) {
         window.clearTimeout(lastTimeout);
       }
       lastTimeout = window.setTimeout(function () {
         filterClickHandler(evt, picturesLoad);
       }, TIMEOUT);
+    };
+    
+    var previewDoHandler = function (evt) {
+      modalOpenAddHandler();
+      pictureOpenHandler(evt, picturesLoad);
+      document.addEventListener('keydown', pictureCloseEscHandler);
+    };
+    
+    // слушатель для вызова большой картинки
+    pictureSmallPlace.addEventListener('click', previewDoHandler);
+    pictureSmallPlace.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === ENTER_KEY_CODE) {
+        previewDoHandler(evt);
+      }
+    });
+    
+    // применение фильтров
+    filtersForm.addEventListener('click', filterDoHandler);
+    filtersForm.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === ENTER_KEY_CODE) {
+        filterDoHandler(evt);
+      }
     });
   };
   
@@ -168,10 +172,17 @@
   window.backend.load(successLoadHandler, errorLoadHandler);
   
   // закрыть картинку по нажатию на крестик
-  pictureBigCancel.addEventListener('click', function() {
+  pictureBigCancel.addEventListener('click', function () {
     pictureCloseHandler();
     modalOpenRemoveHandler();
     document.removeEventListener('keydown', pictureCloseEscHandler);
+  });
+  pictureBigCancel.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEY_CODE) {
+      pictureCloseHandler();
+      modalOpenRemoveHandler();
+      document.removeEventListener('keydown', pictureCloseEscHandler);
+    }
   });
 
 })();

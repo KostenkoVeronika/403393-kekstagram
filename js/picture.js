@@ -29,11 +29,10 @@
   
   //
   window.removeTemplateElement = function () {
-    
     while (picturePlace.children.length > 2) {
       picturePlace.removeChild(picturePlace.children[2]);
     }
-  }
+  };
 
 })();
 

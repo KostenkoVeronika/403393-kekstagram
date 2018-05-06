@@ -3,6 +3,8 @@
 // ДОБАВЛЕНИЕ ЭФФЕКТА И УРОВНЯ ЭФФЕКТА, ИЗМЕНЕНИЕ РАЗМЕРА КАРТИНКИ В ФОРМЕ
 
 (function () {
+  
+  var ENTER_KEY_CODE = 13;
 
   var pictureEffects = document.querySelector('.img-upload__overlay');
   var pictureSizeValue = pictureEffects.querySelector('.resize__control--value');
@@ -94,9 +96,17 @@
       picturePreview.style.filter = 'brightness(' + level + ')';
     }
   };
+  
+  var escResizeHandler = function (evt) {
+    if (evt.keyCode === ENTER_KEY_CODE) {
+      pictureResizeHandler(evt);
+      pictureResize.removeEventListener('keydown', escResizeHandler);
+    }
+  };
 
   // изменение размера изображения
   pictureResize.addEventListener('click', pictureResizeHandler);
+  pictureResize.addEventListener('keydown', escResizeHandler);
   
   // управление эффектами
   effectsList.addEventListener('click', function (evt){
