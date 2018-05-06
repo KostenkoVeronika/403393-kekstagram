@@ -93,7 +93,7 @@
     hashtagValidateHandler(evt);
     comment.addEventListener('invalid', function () {
       commentValidateHandler(evt);
-    })
+    });
   });
 
 })();
