@@ -7,7 +7,7 @@
   // функция для заполнения элементов по шаблону
   var fillTemplateFragment = function (pictureInfo, template) {
     var templateFragment = document.createDocumentFragment();
-    window.pictureData = pictureInfo;
+    var pictureData = pictureInfo;
     for (var i = 0; i < pictureInfo.length; i++) {
       var pictureElement = template.cloneNode(true);
       pictureElement.querySelector('.picture__img').setAttribute('src', pictureInfo[i].url);
