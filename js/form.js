@@ -5,8 +5,8 @@
 (function () {
 
   var ESC_KEY_CODE = 27;
-  var SCALE_LINE_END = 453;
-  
+  var ENTER_KEY_CODE = 13;
+
   var pictureEffects = document.querySelector('.img-upload__overlay');
   var pictureUpload = document.querySelector('#upload-file');
   var pictureEffectsClose = pictureEffects.querySelector('#upload-cancel');
@@ -15,7 +15,6 @@
   var picturePreview = pictureEffects.querySelector('.img-upload__preview');
   var scale = pictureEffects.querySelector('.scale');
   var scalePin = pictureEffects.querySelector('.scale__pin');
-  var scaleValue = pictureEffects.querySelector('.scale__value');
   var scaleLevel = pictureEffects.querySelector('.scale__level');
   var form = document.querySelector('.img-upload__form');
   var hashtag = form.querySelector('.text__hashtags');
@@ -37,8 +36,9 @@
 
   var pictureChangeCloseHandler = function () {
     pictureUpload.value = '';
-    window.effectClear();
+    window.util.effectClear(picturePreview, scalePin, scaleLevel, hashtag, comment);
     pictureEffects.classList.add('hidden');
+    window.util.modalOpenRemoveHandler();
   };
 
   var pictureChangeCloseEscHandler = function (evt) {
@@ -50,42 +50,50 @@
   };
 
   // загрузка картинки и появление окна редактирования и закрытие по клавише еск
-  pictureUpload.addEventListener('change', function () {
+  pictureUpload.addEventListener('change', function (evt) {
+    window.util.modalOpenAddHandler();
     pictureChangeOpenHandler();
     document.addEventListener('keydown', pictureChangeCloseEscHandler);
   });
-  
+
   // закрытие окна редактирования по клику и снятие отслеживания клавиши еск
   pictureEffectsClose.addEventListener('click', function () {
     pictureChangeCloseHandler();
     document.removeEventListener('keydown', pictureChangeCloseEscHandler);
   });
 
+  pictureEffectsClose.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEY_CODE) {
+      pictureChangeCloseHandler();
+      document.removeEventListener('keydown', pictureChangeCloseEscHandler);
+    }
+  });
+
   // когда фокус на хэштегах клавиша еск не сработает
   hashtag.addEventListener('focus', function () {
     document.removeEventListener('keydown', pictureChangeCloseEscHandler);
   });
-  
+
   // когда фокус ушёл с хэштегов клавиша еск сработает
   hashtag.addEventListener('blur', function () {
     document.addEventListener('keydown', pictureChangeCloseEscHandler);
   });
-  
+
   // когда фокус на комментах клавиша еск не сработает
   comment.addEventListener('focus', function () {
     document.removeEventListener('keydown', pictureChangeCloseEscHandler);
   });
-  
+
   // когда фокус ушёл с комментов клавиша еск сработает
   comment.addEventListener('blur', function () {
     document.addEventListener('keydown', pictureChangeCloseEscHandler);
   });
-  
+
   // отправка данных на сервер - успех
-  var successSendHandler = function (data) {
+  var successSendHandler = function () {
     pictureChangeCloseHandler();
   };
-  
+
   // отправка данных на сервер - ошибка
   var errorSendHandler = function (message) {
     pictureChangeCloseHandler();
@@ -94,7 +102,7 @@
     messageBlock.textContent = message;
     errorLinks.insertAdjacentElement('beforebegin', messageBlock);
   };
-  
+
   // отправка данных на сервер
   form.addEventListener('submit', function (evt) {
     window.backend.upload(new FormData(form), successSendHandler, errorSendHandler);
@@ -102,4 +110,3 @@
   });
 
 })();
-

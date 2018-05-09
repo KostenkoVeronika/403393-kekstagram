@@ -10,7 +10,7 @@
   var comment = form.querySelector('.text__description');
 
   // обработчики
-  var hashtagValidateHandler = function (evt) {
+  var hashtagValidateHandler = function () {
     var hashtagValue = hashtag.value;
     var hashtagArray = hashtagValue.split(' ');
     var sameHashtag = false;
@@ -48,7 +48,7 @@
         }
         if (itemLength > 20) {
           hashtagError = checkSameError(hashtagError, 'Длина одного хэш-тега не должна превышать 20 символов. ');
-        } 
+        }
         if (doubleHashtag) {
           hashtagError = checkSameError(hashtagError, 'Хэш-теги должны разделяться пробелами. ');
         }
@@ -57,44 +57,39 @@
         }
         if (sameHashtag) {
           hashtagError = checkSameError(hashtagError, 'Хэш-теги не должны повторяться. ');
-        }  
+        }
       }
     }
     // выводит сообщение об ошибках
     if (hashtagError !== 'Вы неправильно ввели данные! ') {
       hashtag.setCustomValidity(hashtagError);
-      hashtag.classList.add('description-invalid');
+      hashtag.style.border = '2px solid rgb(255, 0, 0)';
     } else {
       hashtag.setCustomValidity('');
-      hashtag.classList.remove('description-invalid');
+      hashtag.style.border = 'none';
     }
   };
 
   // проверяет, чтобы сообщения об ошибках в хэштегах не повторялись
   var checkSameError = function (errorAll, errorMessage) {
-    if (errorAll.indexOf(errorMessage) === -1) {
-      errorAll += errorMessage;
-    }
+    errorAll = errorAll.indexOf(errorMessage) === -1 ? errorAll + errorMessage : errorAll + '';
     return errorAll;
   };
 
-  var commentValidateHandler = function (evt) {
+  var commentValidateHandler = function () {
     if (comment.validity.tooLong) {
       comment.setCustomValidity('Комментрий не должен быть длиннее 140 символов.');
-      comment.classList.add('description-invalid');
+      hashtag.style.border = '2px solid rgb(255, 0, 0)';
     } else {
       comment.setCustomValidity('');
-      comment.classList.remove('description-invalid');
+      hashtag.style.border = 'none';
     }
   };
 
   // при клике на сабмит валидирует хэштеги и комментарий
   formSubmit.addEventListener('click', function (evt) {
     hashtagValidateHandler(evt);
-    comment.addEventListener('invalid', function (evt) {
-      commentValidateHandler(evt);
-    })
+    comment.addEventListener('invalid', commentValidateHandler);
   });
-  
-})();
 
+})();
