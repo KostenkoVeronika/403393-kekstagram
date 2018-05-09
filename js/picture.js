@@ -3,14 +3,8 @@
 // ОТРИСОВЫВАЕТ МИНИАТЮРЫ
 
 (function () {
-  // создает сэкшн для миниатюр
-  var createPicturesSmallPlace = function () {
-    var picturesClass = document.querySelector('.pictures');
-    var place = document.createElement('section');
-    place.classList.add('container', 'pictures', 'picture-small__place');
-    picturesClass.appendChild(place);
-    return place;
-  };
+
+  var picturePlace = document.querySelector('.pictures');
 
   // функция для заполнения элементов по шаблону
   var fillTemplateFragment = function (pictureInfo, template) {
@@ -27,17 +21,14 @@
 
   // функции для создания и удаления миниатюр
   window.picture = {
-    makeTemplateElement: function (pictureInfo, picturePlace) {
-      if (!picturePlace) {
-        var picturePlace = createPicturesSmallPlace();
-      }
+    makeTemplateElement: function (pictureInfo) {
       var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture__link');
       var pictureFragment = fillTemplateFragment(pictureInfo, pictureTemplate);
       picturePlace.appendChild(pictureFragment);
     },
-    removeTemplateElement: function (picturePlace) {
-      while (picturePlace.firstChild) {
-        picturePlace.removeChild(picturePlace.firstChild);
+    removeTemplateElement: function () {
+      while (picturePlace.children.length > 2) {
+        picturePlace.removeChild(picturePlace.children[2]);
       }
     }
   };

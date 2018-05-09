@@ -8,6 +8,7 @@
   var ENTER_KEY_CODE = 13;
   var TIMEOUT = 500;
 
+  var pictureSmallPlace = document.querySelector('.pictures');
   var pictureBig = document.querySelector('.big-picture');
   var pictureBigCancel = pictureBig.querySelector('#picture-cancel');
   var pictureBigCommentsPlace = pictureBig.querySelector('.social__comments');
@@ -31,12 +32,13 @@
   };
 
   var pictureOpenHandler = function (evt, pictureData) {
-    window.util.modalOpenAddHandler();
     var target = evt.target;
     if (target.tagName === 'IMG') {
+      window.util.modalOpenAddHandler();
       var src = target.getAttribute('src');
       pictureOpenSrcHandler(pictureData, src);
     } else if (target.tagName === 'A') {
+      window.util.modalOpenAddHandler();
       var src = target.children[0].getAttribute('src');
       pictureOpenSrcHandler(pictureData, src);
     }
@@ -75,19 +77,19 @@
     return randomOrder;
   };
 
-  var doFilter = function (data, place, func) {
+  var doFilter = function (data, func) {
     if (func) {
       var copy = data.slice();
       var arrayNew = func(copy);
-      window.picture.makeTemplateElement(arrayNew, place);
+      window.picture.makeTemplateElement(arrayNew);
     } else {
-      window.picture.makeTemplateElement(data, place);
+      window.picture.makeTemplateElement(data);
     }
   };
 
-  var filterClickHandler = function (evt, data, place) {
+  var filterClickHandler = function (evt, data) {
     var filterActiveClass = 'img-filters__button--active';
-    window.picture.removeTemplateElement(place);
+    window.picture.removeTemplateElement();
     for (var j = 0; j < filterButtons.length; j++) {
       filterButtons[j].classList.remove(filterActiveClass);
     }
@@ -96,13 +98,13 @@
       var filterId = target.getAttribute('id');
       target.classList.add(filterActiveClass);
       if (filterId === 'filter-popular') {
-        doFilter(data, place, sortLikes);
+        doFilter(data, sortLikes);
       } else if (filterId === 'filter-recommend') {
-        doFilter(data, place);
+        doFilter(data);
       } else if (filterId === 'filter-discussed') {
-        doFilter(data, place, sortComments);
+        doFilter(data, sortComments);
       } else if (filterId === 'filter-random') {
-        doFilter(data, place, sortRandom);
+        doFilter(data, sortRandom);
       }
     }
   };
@@ -112,7 +114,6 @@
     picturesLoad = data;
     // вызов для отображения маленьких картинок
     window.picture.makeTemplateElement(picturesLoad);
-    var pictureSmallPlace = document.querySelector('.picture-small__place');
     filtersBlock.classList.remove('img-filters--inactive');
 
     var filterDoHandler = function (evt) {
@@ -120,7 +121,7 @@
         window.clearTimeout(lastTimeout);
       }
       lastTimeout = window.setTimeout(function () {
-        filterClickHandler(evt, picturesLoad, pictureSmallPlace);
+        filterClickHandler(evt, picturesLoad);
       }, TIMEOUT);
     };
 
