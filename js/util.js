@@ -23,12 +23,15 @@
         hashtagText.value = '';
         commentText.value = '';
       }
+<<<<<<< HEAD
     },
     modalOpenAddHandler: function () {
       document.querySelector('body').classList.add('modal-open');
     },
     modalOpenRemoveHandler: function () {
       document.querySelector('body').classList.remove('modal-open');
+=======
+>>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
     }
   };
 })();
