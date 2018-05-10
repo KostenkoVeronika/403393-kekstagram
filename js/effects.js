@@ -5,6 +5,10 @@
 (function () {
 
   var ENTER_KEY_CODE = 13;
+  var ZOOM_MAX = 100;
+  var ZOOM_MIN = 25;
+  var ZOOM_STEP = 25;
+  var PHOBOS_STEP = 25;
 
   var pictureEffects = document.querySelector('.img-upload__overlay');
   var pictureSizeValue = pictureEffects.querySelector('.resize__control--value');
@@ -19,45 +23,47 @@
   var comment = form.querySelector('.text__description');
   var scaleLine = pictureEffects.querySelector('.scale__line');
 
-  // обработчики
-  var pictureResizeHandler = function (evt) {
-    var target = evt.target;
-    var currentSize = parseInt(pictureSizeValue.getAttribute('value'), 10);
-    if (target.getAttribute('class') === 'resize__control resize__control--minus') {
-      if (currentSize > 50) {
-        currentSize -= 25;
-      } else if (currentSize > 25 && currentSize <= 50) {
-        currentSize = 25;
-      }
-    } else if (target.getAttribute('class') === 'resize__control resize__control--plus') {
-      if (currentSize < 75) {
-        currentSize += 25;
-      } else if (currentSize < 100 && currentSize >= 75) {
-        currentSize = 100;
-      }
-    }
-    pictureSizeValue.setAttribute('value', currentSize + '%');
-    var styleScale = 'scale(' + currentSize / 100 + ')';
+  var resizePicture = function (size) {
+    pictureSizeValue.setAttribute('value', size + '%');
+    var styleScale = 'scale(' + size / 100 + ')';
     picturePreview.style.transform = styleScale;
+  }
+
+  var onResizeClick = function (evt) {
+    var target = evt.target;
+    var currentSize = Number(pictureSizeValue.getAttribute('value').replace('%', ''));
+    var isMinus = target.classList.contains('resize__control--minus');
+    var isPlus = target.classList.contains('resize__control--plus');
+    if (isMinus) {
+      currentSize = Math.max(currentSize - ZOOM_STEP, ZOOM_MIN);
+    } else if (isPlus) {
+      currentSize = Math.min(currentSize + ZOOM_STEP, ZOOM_MAX);
+    }
+    resizePicture(currentSize);
   };
 
-  var effectAddHandler = function (evt) {
+  var onEffectClick = function (evt) {
     window.util.effectClear(picturePreview, scalePin, scaleLevel, hashtag, comment);
+    var filterId;
+    var filterName;
     var target = evt.target;
-    if (target.tagName === 'INPUT') {
-      var filterId = target.getAttribute('id');
-      if (filterId !== 'effect-none') {
-        scale.classList.remove('hidden');
-        // добавление класса и максимального эффекта картинке
-        var filterName = target.getAttribute('value');
-        if (filterId === 'effect-' + filterName) {
-          picturePreview.classList.add('effects__preview--' + filterName);
-          effectChangeHandler(scale.offsetWidth);
-        }
-      } else {
-        picturePreview.classList.add('effects__preview--none');
-        scale.classList.add('hidden');
+    if (target.tagName === 'LI') {
+      filterId = target.children[0].getAttribute('id');
+      filterName = target.children[0].getAttribute('value');
+    } else if (target.tagName === 'INPUT') {
+      filterId = target.getAttribute('id');
+      filterName = target.getAttribute('value');
+    }
+    if (filterId !== 'effect-none') {
+      scale.classList.remove('hidden');
+      // добавление класса и максимального эффекта картинке
+      if (filterId === 'effect-' + filterName) {
+        picturePreview.classList.add('effects__preview--' + filterName);
+        changeEffect(scale.offsetWidth);
       }
+    } else {
+      picturePreview.classList.add('effects__preview--none');
+      scale.classList.add('hidden');
     }
   };
 
@@ -67,7 +73,7 @@
     return value;
   };
 
-  var effectChangeHandler = function (pin) {
+  var changeEffect = function (pin) {
     var effectClassName = picturePreview.classList.item(picturePreview.classList.length - 1);
     var value = proportionPin(pin);
     var level;
@@ -80,11 +86,11 @@
     } else if (effectClassName === 'effects__preview--marvin') {
       picturePreview.style.filter = 'invert(' + value + '%)';
     } else if (effectClassName === 'effects__preview--phobos') {
-      if (value >= 0 && value <= 25) {
+      if (value >= 0 && value <= PHOBOS_STEP) {
         level = '0px';
-      } else if (value > 25 && value <= 50) {
+      } else if (value > PHOBOS_STEP && value <= 2 * PHOBOS_STEP) {
         level = '1px';
-      } else if (value > 50 && value <= 75) {
+      } else if (value > 2 * PHOBOS_STEP && value <= 3 * PHOBOS_STEP) {
         level = '2px';
       } else {
         level = '3px';
@@ -96,20 +102,23 @@
     }
   };
 
-  var escResizeHandler = function (evt) {
+  var onResizeEsc = function (evt) {
     if (evt.keyCode === ENTER_KEY_CODE) {
-      pictureResizeHandler(evt);
-      pictureResize.removeEventListener('keydown', escResizeHandler);
+      onResizeClick(evt);
+      pictureResize.removeEventListener('keydown', onResizeEsc);
     }
   };
 
   // изменение размера изображения
-  pictureResize.addEventListener('click', pictureResizeHandler);
-  pictureResize.addEventListener('keydown', escResizeHandler);
+  pictureResize.addEventListener('click', onResizeClick);
+  pictureResize.addEventListener('keydown', onResizeEsc);
 
   // управление эффектами
-  effectsList.addEventListener('click', function (evt) {
-    effectAddHandler(evt);
+  effectsList.addEventListener('click', onEffectClick);
+  effectsList.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEY_CODE) {
+      onEffectClick(evt);
+    }
   });
 
   // перемещение слайдера
@@ -117,7 +126,7 @@
     evt.preventDefault();
     var startX = evt.clientX;
 
-    var pinMoveHandler = function (evtMove) {
+    var onPinMove = function (evtMove) {
       evtMove.preventDefault();
       var shift = startX - evtMove.clientX;
       startX = evtMove.clientX;
@@ -127,18 +136,18 @@
         scaleLevel.style.width = proportionPin(pinPosition) + '%';
       }
       var pinValue = parseInt(scalePin.style.left, 10);
-      effectChangeHandler(pinValue);
+      changeEffect(pinValue);
     };
 
-    var pinUpHandler = function (evtUp) {
+    var onPinUp = function (evtUp) {
       evtUp.preventDefault();
       var pinValue = parseInt(scalePin.style.left, 10);
-      effectChangeHandler(pinValue);
-      document.removeEventListener('mousemove', pinMoveHandler);
-      document.removeEventListener('mouseup', pinUpHandler);
+      changeEffect(pinValue);
+      document.removeEventListener('mousemove', onPinMove);
+      document.removeEventListener('mouseup', onPinUp);
     };
-    document.addEventListener('mousemove', pinMoveHandler);
-    document.addEventListener('mouseup', pinUpHandler);
+    document.addEventListener('mousemove', onPinMove);
+    document.addEventListener('mouseup', onPinUp);
   });
 
 })();

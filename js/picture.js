@@ -19,17 +19,17 @@
     return templateFragment;
   };
 
-  // функция для создания элементов по шаблону
-  window.makeTemplateElement = function (pictureInfo) {
-    var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture__link');
-    var pictureFragment = fillTemplateFragment(pictureInfo, pictureTemplate);
-    picturePlace.appendChild(pictureFragment);
-  };
-
-  //
-  window.removeTemplateElement = function () {
-    while (picturePlace.children.length > 2) {
-      picturePlace.removeChild(picturePlace.children[2]);
+  // функции для создания и удаления миниатюр
+  window.picture = {
+    makeTemplateElement: function (pictureInfo) {
+      var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture__link');
+      var pictureFragment = fillTemplateFragment(pictureInfo, pictureTemplate);
+      picturePlace.appendChild(pictureFragment);
+    },
+    removeTemplateElement: function () {
+      while (picturePlace.children.length > 2) {
+        picturePlace.removeChild(picturePlace.children[2]);
+      }
     }
   };
 

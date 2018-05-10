@@ -10,7 +10,7 @@
   var comment = form.querySelector('.text__description');
 
   // обработчики
-  var hashtagValidateHandler = function () {
+  var onHashtagValidate = function () {
     var hashtagValue = hashtag.value;
     var hashtagArray = hashtagValue.split(' ');
     var sameHashtag = false;
@@ -63,37 +63,33 @@
     // выводит сообщение об ошибках
     if (hashtagError !== 'Вы неправильно ввели данные! ') {
       hashtag.setCustomValidity(hashtagError);
-      hashtag.classList.add('description-invalid');
+      hashtag.style.border = '2px solid rgb(255, 0, 0)';
     } else {
       hashtag.setCustomValidity('');
-      hashtag.classList.remove('description-invalid');
+      hashtag.style.border = 'none';
     }
   };
 
   // проверяет, чтобы сообщения об ошибках в хэштегах не повторялись
   var checkSameError = function (errorAll, errorMessage) {
-    if (errorAll.indexOf(errorMessage) === -1) {
-      errorAll += errorMessage;
-    }
+    errorAll = errorAll.indexOf(errorMessage) === -1 ? errorAll + errorMessage : errorAll + '';
     return errorAll;
   };
 
-  var commentValidateHandler = function () {
+  var onCommentValidate = function () {
     if (comment.validity.tooLong) {
       comment.setCustomValidity('Комментрий не должен быть длиннее 140 символов.');
-      comment.classList.add('description-invalid');
+      hashtag.style.border = '2px solid rgb(255, 0, 0)';
     } else {
       comment.setCustomValidity('');
-      comment.classList.remove('description-invalid');
+      hashtag.style.border = 'none';
     }
   };
 
   // при клике на сабмит валидирует хэштеги и комментарий
   formSubmit.addEventListener('click', function (evt) {
-    hashtagValidateHandler(evt);
-    comment.addEventListener('invalid', function () {
-      commentValidateHandler(evt);
-    });
+    onHashtagValidate(evt);
+    comment.addEventListener('invalid', onCommentValidate);
   });
 
 })();

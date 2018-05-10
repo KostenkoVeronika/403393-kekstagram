@@ -23,7 +23,7 @@
   var errorLinks = errorBlock.querySelector('.error__links');
 
   // обработчики
-  var pictureChangeOpenHandler = function () {
+  var onUploadClick = function () {
     // две строки для сброса значения размера до 100%
     pictureSizeValue.setAttribute('value', '100%');
     picturePreview.setAttribute('style', 'transform: scale(1);');
@@ -34,67 +34,69 @@
     scale.classList.add('hidden');
   };
 
-  var pictureChangeCloseHandler = function () {
+  var onUploadCancelClick = function () {
     pictureUpload.value = '';
     window.util.effectClear(picturePreview, scalePin, scaleLevel, hashtag, comment);
     pictureEffects.classList.add('hidden');
+    window.util.closeModal();
   };
 
-  var pictureChangeCloseEscHandler = function (evt) {
+  var onUploadCancelEsc = function (evt) {
     if (evt.keyCode === ESC_KEY_CODE) {
-      pictureChangeCloseHandler();
+      onUploadCancelClick();
       // не отслеживать больше еск
-      document.removeEventListener('keydown', pictureChangeCloseEscHandler);
+      document.removeEventListener('keydown', onUploadCancelEsc);
     }
   };
 
   // загрузка картинки и появление окна редактирования и закрытие по клавише еск
-  pictureUpload.addEventListener('change', function () {
-    pictureChangeOpenHandler();
-    document.addEventListener('keydown', pictureChangeCloseEscHandler);
+  pictureUpload.addEventListener('change', function (evt) {
+    window.util.openModal();
+    onUploadClick();
+    document.addEventListener('keydown', onUploadCancelEsc);
   });
 
   // закрытие окна редактирования по клику и снятие отслеживания клавиши еск
   pictureEffectsClose.addEventListener('click', function () {
-    pictureChangeCloseHandler();
-    document.removeEventListener('keydown', pictureChangeCloseEscHandler);
+    onUploadCancelClick();
+    document.removeEventListener('keydown', onUploadCancelEsc);
   });
 
   pictureEffectsClose.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEY_CODE) {
-      pictureChangeCloseHandler();
-      document.removeEventListener('keydown', pictureChangeCloseEscHandler);
+      onUploadCancelClick();
+      document.removeEventListener('keydown', onUploadCancelEsc);
     }
   });
 
   // когда фокус на хэштегах клавиша еск не сработает
   hashtag.addEventListener('focus', function () {
-    document.removeEventListener('keydown', pictureChangeCloseEscHandler);
+    document.removeEventListener('keydown', onUploadCancelEsc);
   });
 
   // когда фокус ушёл с хэштегов клавиша еск сработает
   hashtag.addEventListener('blur', function () {
-    document.addEventListener('keydown', pictureChangeCloseEscHandler);
+    document.addEventListener('keydown', onUploadCancelEsc);
   });
 
   // когда фокус на комментах клавиша еск не сработает
   comment.addEventListener('focus', function () {
-    document.removeEventListener('keydown', pictureChangeCloseEscHandler);
+    document.removeEventListener('keydown', onUploadCancelEsc);
   });
 
   // когда фокус ушёл с комментов клавиша еск сработает
   comment.addEventListener('blur', function () {
-    document.addEventListener('keydown', pictureChangeCloseEscHandler);
+    document.addEventListener('keydown', onUploadCancelEsc);
   });
 
   // отправка данных на сервер - успех
-  var successSendHandler = function () {
-    pictureChangeCloseHandler();
+  var onSuccess = function () {
+    onUploadCancelClick();
   };
 
   // отправка данных на сервер - ошибка
-  var errorSendHandler = function (message) {
-    pictureChangeCloseHandler();
+  var onError = function (message) {
+    onUploadCancelClick();
     errorBlock.classList.remove('hidden');
     var messageBlock = document.createElement('p');
     messageBlock.textContent = message;
@@ -103,7 +105,7 @@
 
   // отправка данных на сервер
   form.addEventListener('submit', function (evt) {
-    window.backend.upload(new FormData(form), successSendHandler, errorSendHandler);
+    window.backend.upload(new FormData(form), onSuccess, onError);
     evt.preventDefault();
   });
 

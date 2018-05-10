@@ -23,6 +23,12 @@
         hashtagText.value = '';
         commentText.value = '';
       }
+    },
+    openModal: function () {
+      document.querySelector('body').classList.add('modal-open');
+    },
+    closeModal: function () {
+      document.querySelector('body').classList.remove('modal-open');
     }
   };
 })();
