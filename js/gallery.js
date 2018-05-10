@@ -31,18 +31,6 @@
     }
   };
 
-  var pictureOpenSrcHandler = function (pictureData, src) {
-    for (var i = 0; i < pictureData.length; i++) {
-      if (pictureData[i].url === src) {
-        // чистит прошлые комменты
-        while (pictureBigCommentsPlace.firstChild) {
-          pictureBigCommentsPlace.removeChild(pictureBigCommentsPlace.firstChild);
-        }
-        window.fillBigPicture(i, pictureData);
-      }
-    }
-  };
-
   var pictureOpenHandler = function (evt, pictureData) {
     var target = evt.target;
     if (target.tagName === 'IMG') {
@@ -51,10 +39,22 @@
       pictureOpenSrcHandler(pictureData, src);
     } else if (target.tagName === 'A') {
 <<<<<<< HEAD
+<<<<<<< HEAD
       window.util.modalOpenAddHandler();
       var src = target.children[0].getAttribute('src');
 =======
 >>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
+=======
+<<<<<<< HEAD
+      window.util.modalOpenAddHandler();
+      var src = target.children[0].getAttribute('src');
+=======
+>>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
+=======
+      window.util.modalOpenAddHandler();
+      var src = target.children[0].getAttribute('src');
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
+>>>>>>> abe7e108f470c23d78546cec94f3e4e2aae965ba
       pictureOpenSrcHandler(pictureData, src);
     }
   };
@@ -97,6 +97,7 @@
       var copy = data.slice();
       var arrayNew = func(copy);
 <<<<<<< HEAD
+<<<<<<< HEAD
       window.picture.makeTemplateElement(arrayNew);
     } else {
       window.picture.makeTemplateElement(data);
@@ -105,16 +106,43 @@
     } else {
       window.makeTemplateElement(data);
 >>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
+=======
+<<<<<<< HEAD
+      window.picture.makeTemplateElement(arrayNew);
+    } else {
+      window.picture.makeTemplateElement(data);
+=======
+      window.makeTemplateElement(arrayNew);
+    } else {
+      window.makeTemplateElement(data);
+>>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
+=======
+      window.picture.makeTemplateElement(arrayNew);
+    } else {
+      window.picture.makeTemplateElement(data);
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
+>>>>>>> abe7e108f470c23d78546cec94f3e4e2aae965ba
     }
   };
 
   var filterClickHandler = function (evt, data) {
     var filterActiveClass = 'img-filters__button--active';
 <<<<<<< HEAD
+<<<<<<< HEAD
     window.picture.removeTemplateElement();
 =======
     window.removeTemplateElement();
 >>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
+=======
+<<<<<<< HEAD
+    window.picture.removeTemplateElement();
+=======
+    window.removeTemplateElement();
+>>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
+=======
+    window.picture.removeTemplateElement();
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
+>>>>>>> abe7e108f470c23d78546cec94f3e4e2aae965ba
     for (var j = 0; j < filterButtons.length; j++) {
       filterButtons[j].classList.remove(filterActiveClass);
     }
@@ -138,6 +166,10 @@
   var successLoadHandler = function (data) {
     picturesLoad = data;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> abe7e108f470c23d78546cec94f3e4e2aae965ba
     // вызов для отображения маленьких картинок
     window.picture.makeTemplateElement(picturesLoad);
 =======
@@ -145,6 +177,13 @@
     // вызов для отображения маленьких картинок
     window.makeTemplateElement(picturesLoad);
 >>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
+<<<<<<< HEAD
+=======
+=======
+    // вызов для отображения маленьких картинок
+    window.picture.makeTemplateElement(picturesLoad);
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
+>>>>>>> abe7e108f470c23d78546cec94f3e4e2aae965ba
     filtersBlock.classList.remove('img-filters--inactive');
 
     var filterDoHandler = function (evt) {
@@ -158,9 +197,18 @@
 
     var previewDoHandler = function (evt) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       modalOpenAddHandler();
 >>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
+=======
+<<<<<<< HEAD
+=======
+      modalOpenAddHandler();
+>>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
+=======
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
+>>>>>>> abe7e108f470c23d78546cec94f3e4e2aae965ba
       pictureOpenHandler(evt, picturesLoad);
       document.addEventListener('keydown', pictureCloseEscHandler);
     };
@@ -207,10 +255,21 @@
     if (evt.keyCode === ENTER_KEY_CODE) {
       pictureCloseHandler();
 <<<<<<< HEAD
+<<<<<<< HEAD
       window.util.modalOpenRemoveHandler();
 =======
       modalOpenRemoveHandler();
 >>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
+=======
+<<<<<<< HEAD
+      window.util.modalOpenRemoveHandler();
+=======
+      modalOpenRemoveHandler();
+>>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
+=======
+      window.util.modalOpenRemoveHandler();
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
+>>>>>>> abe7e108f470c23d78546cec94f3e4e2aae965ba
       document.removeEventListener('keydown', pictureCloseEscHandler);
     }
   });
