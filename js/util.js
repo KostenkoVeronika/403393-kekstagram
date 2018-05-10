@@ -23,29 +23,12 @@
         hashtagText.value = '';
         commentText.value = '';
       }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
->>>>>>> abe7e108f470c23d78546cec94f3e4e2aae965ba
     },
-    modalOpenAddHandler: function () {
+    openModal: function () {
       document.querySelector('body').classList.add('modal-open');
     },
-    modalOpenRemoveHandler: function () {
+    closeModal: function () {
       document.querySelector('body').classList.remove('modal-open');
-<<<<<<< HEAD
-=======
->>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
-=======
-<<<<<<< HEAD
-=======
->>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
-=======
->>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
->>>>>>> abe7e108f470c23d78546cec94f3e4e2aae965ba
     }
   };
 })();

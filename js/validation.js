@@ -10,7 +10,7 @@
   var comment = form.querySelector('.text__description');
 
   // обработчики
-  var hashtagValidateHandler = function () {
+  var onHashtagValidate = function () {
     var hashtagValue = hashtag.value;
     var hashtagArray = hashtagValue.split(' ');
     var sameHashtag = false;
@@ -76,7 +76,7 @@
     return errorAll;
   };
 
-  var commentValidateHandler = function () {
+  var onCommentValidate = function () {
     if (comment.validity.tooLong) {
       comment.setCustomValidity('Комментрий не должен быть длиннее 140 символов.');
       hashtag.style.border = '2px solid rgb(255, 0, 0)';
@@ -88,24 +88,8 @@
 
   // при клике на сабмит валидирует хэштеги и комментарий
   formSubmit.addEventListener('click', function (evt) {
-    hashtagValidateHandler(evt);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> abe7e108f470c23d78546cec94f3e4e2aae965ba
-    comment.addEventListener('invalid', commentValidateHandler);
-=======
-    comment.addEventListener('invalid', function () {
-      commentValidateHandler(evt);
-    });
->>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
-<<<<<<< HEAD
-=======
-=======
-    comment.addEventListener('invalid', commentValidateHandler);
->>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
->>>>>>> abe7e108f470c23d78546cec94f3e4e2aae965ba
+    onHashtagValidate(evt);
+    comment.addEventListener('invalid', onCommentValidate);
   });
 
 })();
