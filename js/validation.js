@@ -89,7 +89,13 @@
   // при клике на сабмит валидирует хэштеги и комментарий
   formSubmit.addEventListener('click', function (evt) {
     hashtagValidateHandler(evt);
+<<<<<<< HEAD
     comment.addEventListener('invalid', commentValidateHandler);
+=======
+    comment.addEventListener('invalid', function () {
+      commentValidateHandler(evt);
+    });
+>>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
   });
 
 })();
