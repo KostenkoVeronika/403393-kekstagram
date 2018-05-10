@@ -20,6 +20,9 @@
   };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
   // функции для создания и удаления миниатюр
   window.picture = {
     makeTemplateElement: function (pictureInfo) {
@@ -32,6 +35,7 @@
         picturePlace.removeChild(picturePlace.children[2]);
       }
     }
+<<<<<<< HEAD
 =======
   // функция для создания элементов по шаблону
   window.makeTemplateElement = function (pictureInfo) {
@@ -46,6 +50,8 @@
     while (picturePlace.children.length > 2) {
       picturePlace.removeChild(picturePlace.children[2]);
     }
+=======
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
   };
 
 })();

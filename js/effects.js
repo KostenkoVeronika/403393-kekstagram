@@ -6,13 +6,19 @@
 
   var ENTER_KEY_CODE = 13;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
   var ONE_QUARTER = 25;
   var HALF = 50;
   var THREE_QUARTERS = 75;
   var FULL = 100;
   var SIZE_STEP = 25;
+<<<<<<< HEAD
 =======
 >>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
+=======
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
 
   var pictureEffects = document.querySelector('.img-upload__overlay');
   var pictureSizeValue = pictureEffects.querySelector('.resize__control--value');
@@ -31,12 +37,16 @@
   var pictureResizeHandler = function (evt) {
     var target = evt.target;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
     var currentSize = Number(pictureSizeValue.getAttribute('value').replace('%', ''));
     if (target.classList.contains('resize__control--minus')) {
       if (currentSize > HALF) {
         currentSize -= SIZE_STEP;
       } else if (currentSize > ONE_QUARTER && currentSize <= HALF) {
         currentSize = ONE_QUARTER;
+<<<<<<< HEAD
 =======
     var currentSize = parseInt(pictureSizeValue.getAttribute('value'), 10);
     if (target.getAttribute('class') === 'resize__control resize__control--minus') {
@@ -45,6 +55,8 @@
       } else if (currentSize > 25 && currentSize <= 50) {
         currentSize = 25;
 >>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
+=======
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
       }
     } else if (target.classList.contains('resize__control--plus')) {
       if (currentSize < THREE_QUARTERS) {
@@ -61,6 +73,9 @@
   var effectAddHandler = function (evt) {
     window.util.effectClear(picturePreview, scalePin, scaleLevel, hashtag, comment);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
     var filterId;
     var filterName;
     var target = evt.target;
@@ -77,6 +92,7 @@
       if (filterId === 'effect-' + filterName) {
         picturePreview.classList.add('effects__preview--' + filterName);
         effectChangeHandler(scale.offsetWidth);
+<<<<<<< HEAD
 =======
     var target = evt.target;
     if (target.tagName === 'INPUT') {
@@ -93,6 +109,8 @@
         picturePreview.classList.add('effects__preview--none');
         scale.classList.add('hidden');
 >>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
+=======
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
       }
     } else {
       picturePreview.classList.add('effects__preview--none');
@@ -148,15 +166,21 @@
 
   // управление эффектами
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
   effectsList.addEventListener('click', effectAddHandler);
   effectsList.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEY_CODE) {
       effectAddHandler(evt);
     }
+<<<<<<< HEAD
 =======
   effectsList.addEventListener('click', function (evt) {
     effectAddHandler(evt);
 >>>>>>> ca31972146d0e160bd32f014446e02346d7294d9
+=======
+>>>>>>> c0d099e1ef2f827cfe0842c04cfbf9d4f66df8cf
   });
 
   // перемещение слайдера
