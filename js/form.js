@@ -50,7 +50,7 @@
   };
 
   // загрузка картинки и появление окна редактирования и закрытие по клавише еск
-  pictureUpload.addEventListener('change', function (evt) {
+  pictureUpload.addEventListener('change', function () {
     window.util.openModal();
     onUploadClick();
     document.addEventListener('keydown', onUploadCancelEsc);

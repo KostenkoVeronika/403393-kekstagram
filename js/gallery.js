@@ -33,13 +33,14 @@
 
   var openPicture = function (evt, pictureData) {
     var target = evt.target;
+    var src;
     if (target.tagName === 'IMG') {
       window.util.openModal();
-      var src = target.getAttribute('src');
+      src = target.getAttribute('src');
       openPictureSrc(pictureData, src);
     } else if (target.tagName === 'A') {
       window.util.openModal();
-      var src = target.children[0].getAttribute('src');
+      src = target.children[0].getAttribute('src');
       openPictureSrc(pictureData, src);
     }
   };

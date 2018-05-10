@@ -27,7 +27,7 @@
     pictureSizeValue.setAttribute('value', size + '%');
     var styleScale = 'scale(' + size / 100 + ')';
     picturePreview.style.transform = styleScale;
-  }
+  };
 
   var onResizeClick = function (evt) {
     var target = evt.target;
